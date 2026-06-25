@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Red Center Pointer Dot -->
+        <View
+            android:id="@+id/pointer_dot"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:drawable/presence_online" />
+
+        <ImageView
+            android:id="@+id/btn_gear"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:src="@android:drawable/ic_menu_manage" />
+
+        <ImageView
+            android:id="@+id/btn_lock"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="8dp"
+            android:src="@android:drawable/ic_lock_idle_lock" />
+    </LinearLayout>
+
+    <!-- Settings Panel (Seekbars for Scale) -->
+    <LinearLayout
+        android:id="@+id/settings_panel"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#DD000000"
+        android:padding="10dp"
+        android:layout_marginTop="5dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/label_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sensitivity X: 1.0x"
+            android:textColor="#FFFFFF" />
+
+        <SeekBar
+            android:id="@+id/seek_x"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:progress="0" />
+
+        <TextView
+            android:id="@+id/label_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sensitivity Y: 1.0x"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
+
+        <SeekBar
+            android:id="@+id/seek_y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:progress="0" />
+    </LinearLayout>
+</LinearLayout>
