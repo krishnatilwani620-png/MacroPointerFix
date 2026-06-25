@@ -6,7 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
-import         android.content.Intent
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -46,8 +47,8 @@ class FloatingPointerService : Service() {
         }
 
         val notification: Notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Pointer Active")
-            .setContentText("Assistive overlay tracking system is running.")
+            .setContentTitle("Macro Pointer Active")
+            .setContentText("Gaming overlay engine is running.")
             .setSmallIcon(android.R.drawable.ic_menu_compass)
             .build()
 
@@ -81,6 +82,7 @@ class FloatingPointerService : Service() {
         val pointerDot = floatingView.findViewById<View>(R.id.pointer_dot)
         val btnGear = floatingView.findViewById<ImageView>(R.id.btn_gear)
         val btnLock = floatingView.findViewById<ImageView>(R.id.btn_lock)
+        val btnMacroTrigger = floatingView.findViewById<Button>(R.id.btn_macro_trigger)
         val settingsPanel = floatingView.findViewById<LinearLayout>(R.id.settings_panel)
         val seekX = floatingView.findViewById<SeekBar>(R.id.seek_x)
         val seekY = floatingView.findViewById<SeekBar>(R.id.seek_y)
@@ -102,6 +104,16 @@ class FloatingPointerService : Service() {
             } else {
                 settingsPanel.visibility = View.GONE
             }
+        }
+
+        btnMacroTrigger.setOnClickListener {
+            val location = IntArray(2)
+            pointerDot.getLocationOnScreen(location)
+            val targetX = location[0] + (pointerDot.width / 2).toFloat()
+            val targetY = location[1] + (pointerDot.height / 2).toFloat()
+            
+            // Asli click automation trigger
+            MacroAccessibilityService.executeClickMacro(targetX, targetY)
         }
 
         seekX.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
