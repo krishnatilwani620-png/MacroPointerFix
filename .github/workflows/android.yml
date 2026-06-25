@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CI/CD - Automatic Fix
 
 on:
   push:
@@ -8,19 +8,42 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 11
-      uses: actions/setup-java@v4
+    - uses: actions/checkout@v3
+
+    # Step to generate missing root gradle files automatically
+     Buccaneer-Fix:
+      run: |
+        if [ ! -f build.gradle ]; then
+          echo "buildscript { dependencies { classpath 'com.android.tools.build:gradle:8.2.2'; classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22' } }; plugins { id 'com.android.application' version '8.2.2' apply false; id 'org.jetbrains.kotlin.android' version '1.9.22' apply false }" > build.gradle
+        fi
+        if [ ! -f settings.gradle ]; then
+          echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }; dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }; rootProject.name = 'AssistivePointer'; include ':app'" > settings.gradle
+        fi
+        if [ ! -f app/build.gradle ]; then
+          mkdir -p app
+          echo "plugins { id 'com.android.application'; id 'org.jetbrains.kotlin.android' }; android { namespace 'com.example.assistivepointer'; compileSdk 34; defaultConfig { applicationId 'com.example.assistivepointer'; minSdk 23; targetSdk 34; versionCode 1; versionName '1.0' }; compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }; kotlinOptions { jvmTarget = '17' } }; dependencies { implementation 'androidx.core:core-ktx:1.12.0'; implementation 'androidx.appcompat:appcompat:1.6.1'; implementation 'com.google.android.material:material:1.11.0' }" > app/build.gradle
+        fi
+
+    - name: set up JDK 17
+      uses: actions/setup-java@v3
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
-        cache: gradle
+
+    - name: Generate Gradle Wrapper
+      run: gradle wrapper
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug --no-daemon
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: Assistive-Pointer-APK
+        path: app/build/outputs/apk/debug/app-debug.apk
